@@ -5,6 +5,10 @@ include_once("scheduler/scheduler.php");
 
 $sc = new ScheduleClient();
 
+// NOTE:
+// Edit scheduler/classes/connect.php to configure database access
+ 
+
 // Use this function once (to populate database with dummy values)
 // Then comment it
 $sc->seed();
@@ -22,6 +26,8 @@ echo "<br><br>";
 $allocation = $sc->get_allocation(5);
 echo "Single allocation details:<br>";
 echo "ID: " . $allocation->request_id . "<br>";
+echo "Title: " . $allocation->title . "<br>";
+echo "Estimated duration (min): " . $allocation->estimated_duration . "<br>";
 echo "Agent Name: " . $allocation->agent_name . "<br>";
 echo "Email: " . $allocation->agent_email . "<br>";
 echo "Phone: " . $allocation->agent_phone . "<br>";
@@ -37,10 +43,12 @@ foreach ($allocations as $allocation) {
 	echo "Pool ID: " . $allocation->pool_id . "<br>";
 	echo "Start time: " . $allocation->pool_start_time . "<br>";
 	echo "End time: " . $allocation->pool_end_time . "<br>";
+	echo "Title: " . $allocation->title . "<br>";
+	echo "Estimated duration (min): " . $allocation->estimated_duration . "<br>";
 	echo "Agent Name: " . $allocation->agent_name . "<br>";
 	echo "Agent Email: " . $allocation->agent_email . "<br>";
 	echo "Agent Phone: " . $allocation->agent_phone . "<br>";
 	echo "Status: " . $allocation->status . "<br>";
 	echo "<br>";
 }
-?>
+// ?>

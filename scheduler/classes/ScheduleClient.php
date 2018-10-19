@@ -14,6 +14,8 @@ class ScheduleClient{
     $this->first_names = ["addison", "adrian", "ainsley", "alex", "andy", "angel", "ashley", "ashton", "aubrey", "avery", "bailey", "bevan", "blair", "bobby", "brett", "brooke", "bronwyn", "cameron", "carson", "casey", "cassidy", "charlie", "chris", "dakota", "dallas", "dana", "darby", "dawson", "devon", "drew", "eden", "ellis", "emery", "emerson", "erin", "finley", "francis", "gene", "gillian", "greer", "hayden", "harlow", "harper", "holland", "hunter", "indigo", "jaden", "jackie", "jamie", "jan", "jesse", "joe", "jody", "jordan", "journey", "julian", "justice", "kai", "keegan", "keely", "keelan", "kei", "keith", "kelly", "kelsey", "kendall", "kennedy", "kensley", "kerry", "kevin", "kieran", "kiley", "kim", "kyle", "lane", "lee", "leslie", "logan", "loren", "macey", "madison", "marley", "marlow", "merritt", "michael", "micky", "montana", "morgan", "nevada", "nico", "owen", "paris", "parker", "pat", "peyton", "phoenix", "piper", "quinn", "rayne", "regan", "rene", "reese", "riley", "robin", "rory", "rowan", "ryan", "sage", "sasha", "scout", "shae", "shannon", "sloan", "skylar", "sydney", "shawn", "storm", "tate", "tatum", "taylor", "tony", "tory", "tracy", "trinity", "tristan", "vick", "wesley", "whitney"]; 
 
     $this->last_names = ["mwangi", "maina", "kamau", "otieno", "kariuki", "njoroge", "kimani", "ochieng", "odhiambo", "omondi", "onyango", "njuguna", "macharia", "karanja", "wanjiru", "njeri", "wambui", "mutua", "juma", "chege", "mbugua", "ndungu", "wachira", "waweru", "wanjiku", "ngugi", "muthoni", "mburu", "mwaura", "gitau", "mungai", "shah", "kinyua", "njenga", "wambua", "mugo", "gitonga", "muriithi", "ouma", "kinyanjui", "njeru", "kuria", "muriuki", "mwaniki", "nyaga", "munene", "owino", "ndegwa", "muchiri", "wafula", "koech", "nganga", "okoth", "wairimu", "cheruiyot", "mutuku", "rotich", "langat", "mohamed", "atieno", "nyambura", "wangui", "achieng", "oduor", "hassan", "githinji", "kioko", "kirui", "musyoka", "patel", "irungu", "njoki", "wainaina", "simiyu", "wambugu", "akinyi", "wangari", "kiarie", "nderitu", "wanjohi", "ndirangu", "abdi", "njogu", "korir", "muiruri", "ali66,0", "mutai", "kinuthia", "mugambi", "okello", "njagi", "kibet", "muli", "opiyo", "mutinda", "ng’ang’a", "mwai", "were", "kyalo", "barasa", "rono", "mwenda", "okumu", "maingi", "muturi", "mathenge", "ndung’u", "mutisya", "bett", "hussein", "oluoch", "ogutu", "odongo", "wahome", "makau", "mwendwa", "kimathi", "wanjala", "owuor", "thuo", "wekesa", "momanyi", "karimi", "adhiambo", "oloo", "waithaka", "mwende", "musau", "munyao", "mureithi", "njiru", "musyoki", "mutiso", "wanja", "njau", "murithi", "odero", "gichuki", "moraa", "wanyonyi", "muema", "karani", "nyakundi", "kiragu", "makokha", "ahmed", "mbogo", "mulwa", "muigai", "kemboi", "murage", "mutunga", "ngure", "awuor", "kihara", "kilonzo", "ngetich", "makori", "omollo", "wanyoike", "kimeu", "anyango", "ngari", "nzioka", "nyongesa", "mumbi", "mumo odera", "murimi", "oyugi", "mbithi", "sang", "opondo", "ngigi", "owiti", "mbuthia", "thuku", "mueni", "kibe", "kiptoo", "kennedy", "okeyo", "kerubo", "muia", "chebet", "wanyama", "musembi", "njue", "omar", "ouko", "kiplagat", "tanui", "mwangangi", "kanyi", "kimutai", "nduta", "oketch", "kamande", "bosire", "ogola"];
+
+    $this->request_titles = ["Safaricom API Access Request", "Request for non-standard software", "Request for standard software", "FTTH Customer Provisioning Request", "LAN Access", "Request Access to 6th Floor Bio metrics", "Request For FlyTxt Access", "New Employee", "M-Pesa Service Requests", "Inventory Adjustments Requests", "Report a Global Outage"];
   }
 
   private function seed_users(){
@@ -77,7 +79,6 @@ class ScheduleClient{
         while($row = $result->fetch_object()){
           array_push($user_id_list, $row->userID);
         }
-        $titles = ["Title1", "Title2", "Title3"];
 
       // Add new requests
 
@@ -87,9 +88,9 @@ class ScheduleClient{
           $crq = $i;
           $staff = "New Staff";
           $id_index = rand(0, count($user_id_list) - 1);
-          $title_index = rand(0, count($titles) - 1);
+          $title_index = rand(0, count($this->request_titles) - 1);
           $user_id = $user_id_list[$id_index];
-          $title = $titles[$title_index];
+          $title = $this->request_titles[$title_index];
           $time_created = date('Y-m-d H:'. $i * 3 . ':S');
           $time_allocated = '2018-10-19 17:00:00';
           $email = 'staff@safaricom.co.ke';
@@ -210,7 +211,7 @@ class ScheduleClient{
      */
     $allocations = [];
 
-    $query = "SELECT p.id as pool_id, p.start_time as pool_start_time, p.end_time as pool_end_time, a.* FROM allocations a join pools p on p.id = a.pool_id";
+    $query = "SELECT p.id as pool_id, p.start_time as pool_start_time, p.end_time as pool_end_time, r.title, r.estimated_duration, a.* FROM allocations a join pools p on p.id = a.pool_id JOIN requests r on r.rID = a.request_id";
 
     $result = $this->con->query($query);
     if($result){
@@ -231,7 +232,7 @@ class ScheduleClient{
      */
     
     $allocation = null;
-    $query = "SELECT request_id, agent_name, agent_email, agent_phone, p.start_time as pool_start_time, p.end_time as pool_end_time FROM allocations a JOIN requests r ON r.rID = a.request_id  JOIN pools p ON p.id = a.pool_id WHERE r.req = " . $request_id;
+    $query = "SELECT request_id, agent_name, agent_email, agent_phone, p.start_time as pool_start_time, p.end_time as pool_end_time, r.title, r.estimated_duration FROM allocations a JOIN requests r ON r.rID = a.request_id  JOIN pools p ON p.id = a.pool_id WHERE r.req = " . $request_id;
     $result = $this->con->query($query);
     if($result){
       if($result->num_rows > 0){
